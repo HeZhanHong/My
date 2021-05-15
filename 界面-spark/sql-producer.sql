@@ -1,0 +1,3 @@
+presto-cli-hive -e"insert into ibsdb.quality select 'ybrz_machine' as type,c_producer as spcode,count(1) as value,data_format(current_timestamp - interval '1' day,'yyyyMMdd')  as day from original.t_qxrz where day=data_format(current_timestamp - interval '1' day,'yyyyMMdd') group by c_producer order by c_producer;"
+presto-cli-hive -e"insert into ibsdb.quality select 'cdr_machine' as type,c_producer as spcode,count(1) as value,data_format(current_timestamp - interval '1' day,'yyyyMMdd')  as day from original.t_cdr_k where day=data_format(current_timestamp - interval '1' day,'yyyyMMdd') group by c_producer order by c_producer;"
+

@@ -1,0 +1,54 @@
+presto-cli-hive -e "insert into ibsdb.quality select 'uli_out_country' as type,1 as spcode,count(distinct c_uli) as value,data_format(current_timestamp - interval '1' day,'yyyyMMdd') as day  from (select tab.c_uli from (select distinct c_uli from (select * from ibsdb.t_cdr_k_uli where regexp_like(c_uli,'^[0-9-]*$')) tab333 where day = data_format(current_timestamp - interval '1' day,'yyyyMMdd') and c_uli like '460-00%' and c_lng = '' and c_lat = '' and c_uli_addr = '' and c_areacode = '' and cardinality(split(c_uli,'-'))=3 and (cast(substr(c_uli,8) as bigint)/256 < 16384 or cast(substr(c_uli,8) as bigint)/256 between 20480 and 32767 or cast(substr(c_uli,8) as bigint)/256 between 40704 and 143359 or cast(substr(c_uli,8) as bigint)/256 between 167936 and  327679 or cast(substr(c_uli,8) as bigint)/256 between 352256 and 417791 or cast(substr(c_uli,8) as bigint)/256 between 425788 and  438271 or cast(substr(c_uli,8) as bigint)/256 between 443392 and 446207 or cast(substr(c_uli,8) as bigint)/256 between 453120 and 626687 or cast(substr(c_uli,8) as bigint)/256 between 638976 and 655359 or cast(substr(c_uli,8) as bigint)/256 between 704512 and 851967 or cast(substr(c_uli,8) as bigint)/256 between 913408  and 987135 or cast(substr(c_uli,8) as bigint)/256 > 991231) )  tab left join (select distinct c_uli from ibsdb.t_cdr_k_uli where day = data_format(current_timestamp - interval '1' day,'yyyyMMdd') and c_uli like '460-00%' and c_lng = '' and c_lat = '' and c_uli_addr = '' and c_areacode = '' and cardinality(split(c_uli,'-'))=3 and substr(c_uli,7) in (select substr(c_uli,7) from ibsdb.t_dim_uli_info_full)) tb on tab.c_uli = tb.c_uli where tb.c_uli is null) tac"
+
+
+INSERT INTO ibsdb.quality
+SELECT 'uli_out_country' AS type, 1 AS spcode, COUNT(DISTINCT c_uli) AS value
+	, data_format(current_timestamp - INTERVAL '1' DAY, 'yyyyMMdd') AS day
+
+FROM (
+	SELECT tab.c_uli
+	FROM (
+		SELECT DISTINCT c_uli
+		FROM (
+			SELECT *
+			FROM ibsdb.t_cdr_k_uli
+			WHERE regexp_like(c_uli, '^[0-9-]*$')
+		) tab333
+		WHERE day = data_format(current_timestamp - INTERVAL '1' DAY, 'yyyyMMdd')
+			AND c_uli LIKE '460-00%'
+			AND c_lng = ''
+			AND c_lat = ''
+			AND c_uli_addr = ''
+			AND c_areacode = ''
+			AND cardinality(split(c_uli, '-')) = 3
+			AND (CAST(substr(c_uli, 8) AS bigint) / 256 < 16384
+				OR CAST(substr(c_uli, 8) AS bigint) / 256 BETWEEN 20480 AND 32767
+				OR CAST(substr(c_uli, 8) AS bigint) / 256 BETWEEN 40704 AND 143359
+				OR CAST(substr(c_uli, 8) AS bigint) / 256 BETWEEN 167936 AND 327679
+				OR CAST(substr(c_uli, 8) AS bigint) / 256 BETWEEN 352256 AND 417791
+				OR CAST(substr(c_uli, 8) AS bigint) / 256 BETWEEN 425788 AND 438271
+				OR CAST(substr(c_uli, 8) AS bigint) / 256 BETWEEN 443392 AND 446207
+				OR CAST(substr(c_uli, 8) AS bigint) / 256 BETWEEN 453120 AND 626687
+				OR CAST(substr(c_uli, 8) AS bigint) / 256 BETWEEN 638976 AND 655359
+				OR CAST(substr(c_uli, 8) AS bigint) / 256 BETWEEN 704512 AND 851967
+				OR CAST(substr(c_uli, 8) AS bigint) / 256 BETWEEN 913408 AND 987135
+				OR CAST(substr(c_uli, 8) AS bigint) / 256 > 991231)
+	) tab
+		LEFT JOIN (
+			SELECT DISTINCT c_uli
+			FROM ibsdb.t_cdr_k_uli
+			WHERE day = data_format(current_timestamp - INTERVAL '1' DAY, 'yyyyMMdd')
+				AND c_uli LIKE '460-00%'
+				AND c_lng = ''
+				AND c_lat = ''
+				AND c_uli_addr = ''
+				AND c_areacode = ''
+				AND cardinality(split(c_uli, '-')) = 3
+				AND substr(c_uli, 7) IN (
+					SELECT substr(c_uli, 7)
+					FROM ibsdb.t_dim_uli_info_full
+				)
+		) tb
+		ON tab.c_uli = tb.c_uli
+	WHERE tb.c_uli IS NULL
+) tac
