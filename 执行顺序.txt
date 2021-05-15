@@ -1,0 +1,9 @@
+先执行hive-table创建语句命令，再按顺序执行下面的脚本任务
+
+sql-uli-distinct
+sql-cdr
+sql-ybrz
+sql-producer
+sql-uli
+sql-result_sql
+sql-tomysql

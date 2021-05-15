@@ -5,7 +5,8 @@ CREATE TABLE `ibsdb.t_cdr_k_uli`(
   `c_lat` string, 
   `c_uli_addr` string)
 PARTITIONED BY ( 
-  `day` string)
+  `day` string,
+  `hour` string)
 ROW FORMAT SERDE 
   'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe' 
 STORED AS INPUTFORMAT 
@@ -23,7 +24,8 @@ CREATE TABLE `ibsdb.quality`(
   `spcode` int, 
   `value` bigint)
 PARTITIONED BY ( 
-  `day` string)
+  `day` string,
+  `hour` string)
 ROW FORMAT SERDE 
   'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe' 
 STORED AS INPUTFORMAT 
@@ -41,7 +43,8 @@ CREATE TABLE `ibsdb.quality_result`(
   `spcode` int,
   `value` string )
 PARTITIONED BY ( 
-  `day` string COMMENT ':')
+  `day` string COMMENT ':',
+  `hour` string)
 ROW FORMAT SERDE 
   'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe' 
 STORED AS INPUTFORMAT 
